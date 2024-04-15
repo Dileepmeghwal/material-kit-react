@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
-
+import axios from 'axios';
 import { useRouter } from 'src/routes/hooks';
 
 import { bgGradient } from 'src/theme/css';
@@ -22,29 +22,51 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function LoginView() {
+export default function RegisterView() {
   const theme = useTheme();
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [avatar, setAvatar] = useState('');
 
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClick = () => {
-    router.push('/dashboard');
-  };
-  const handleSignup = () => {
-    router.push('/signup');
+  const handleRegisterUser = async () => {
+    const formData = { name, email, password, avatar };
+    axios
+      .post('https://api.escuelajs.co/api/v1/users/', formData)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
+  const handleClick = () => {
+    router.push('/login');
+  };
 
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField
+          name="Name"
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <TextField
+          name="email"
+          label="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
         <TextField
           name="password"
           label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -55,6 +77,12 @@ export default function LoginView() {
               </InputAdornment>
             ),
           }}
+        />
+        <TextField
+          name="Avatar"
+          label="Avatar"
+          value={avatar}
+          onChange={(e) => setAvatar(e.target.value)}
         />
       </Stack>
 
@@ -70,9 +98,9 @@ export default function LoginView() {
         type="submit"
         variant="contained"
         color="inherit"
-        onClick={handleClick}
+        onClick={handleRegisterUser}
       >
-        Login
+        Sign Up
       </LoadingButton>
     </>
   );
@@ -103,12 +131,12 @@ export default function LoginView() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4">Sign in to Minimal</Typography>
+          <Typography variant="h4">Sign Up to Minimal</Typography>
 
-          <Typography variant="body2" sx={{ mt: 2, mb: 5 }} on>
-            Don’t have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }} onClick={handleSignup}>
-              Get started
+          <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
+            Already have an account?
+            <Link variant="subtitle2" sx={{ ml: 0.5 }} onClick={handleClick}>
+              Login
             </Link>
           </Typography>
 
